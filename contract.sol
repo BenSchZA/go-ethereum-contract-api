@@ -39,8 +39,12 @@ contract VisaApplicationContract {
         applicant.birthDate = birthDate;
     }
 
-    function apply(bytes32 destination, uint256 arrivalDate, uint256 departureDate) public returns (bool success) {
+    modifier onlyApplicant(){
         assert(applicant.addr == msg.sender);
+        _;
+    }
+
+    function apply(bytes32 destination, uint256 arrivalDate, uint256 departureDate) onlyApplicant public returns (bool success) {
         require(!application.submitted, "Visa application already submitted.");
 
         if (applicant.applied == true) {
@@ -59,8 +63,7 @@ contract VisaApplicationContract {
         return true;
     }
 
-    function submit() public returns (bool success) {
-        assert(applicant.addr == msg.sender);
+    function submit() onlyApplicant public returns (bool success) {
         require(applicant.applied, "Apply for visa application first.");
         require(!application.submitted, "Visa application already submitted.");
 
